@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+
+
+<head>
+  <title>Учеба</title>
+</head>
+
+<body id = "body">
+
+<div class="window">
+	<div class="allSnake">
+		<div class="snakeHade"></div>
+	</div>
+	<div class="eat"></div>
+	<div class="counter">"0"</div>
+</div>
+
+<button class="button-clear" onclick="clearTime()">Стоп</button>
+
+<button class="button" onclick="startUp()">Старт</button>
+
+<button class="button-up" onclick="startUp()">Вверх</button>
+<button class="button-left" onclick="startLeft()">Лево</button>
+<button class="button-right" onclick="startRight()">Право</button>
+<button class="button-down" onclick="startDown()">Вниз</button>
+
+
+
+<style>
+
+.window {
+	position: absolute;
+	height: 600px;
+	width: 1000px;
+	border: 1px solid gray;
+}
+
+.counter {
+	position: absolute;
+	top: 620px;
+	left: 100px;
+}
+
+.snakeHade {
+	position: absolute;
+	top: 320px;
+	left: 480px;
+	height: 40px;
+	width: 40px;
+	background-color: red;
+}
+
+.button {
+	position: absolute;
+	top: 650px;
+	left: 500px;
+}
+
+.button-up {
+	position: absolute;
+	top: 700px;
+	left: 500px;
+}
+
+.button-left {
+	position: absolute;
+	top: 730px;
+	left: 450px;
+}
+
+.button-right {
+	position: absolute;
+	top: 730px;
+	left: 550px;
+}
+
+.button-down {
+	position: absolute;
+	top: 730px;
+	left: 500px;
+}
+
+.button-clear {
+	position: absolute;
+	top: 770px;
+	left: 500px;
+}
+
+.eat {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 40px;
+	width: 40px;
+	background-color: green;
+}
+
+
+
+
+
+</style>
+
+<script>
+
+var eat = document.querySelector('.eat');
+var elem = document.querySelector('.snakeHade');
+var positions = elem.getBoundingClientRect();
+var x = 480;
+var y = 320;
+var timer;
+var lenghtSnake = 1;
+
+var counter = 0;
+var counterMeter = document.querySelector('.counter');
+counterMeter.innerHTML = `${counter}`;
+
+var buttonUp = document.querySelector('.button-up');
+var buttonLeft = document.querySelector('.button-left');
+var buttonRight = document.querySelector('.button-right');
+var buttonDown = document.querySelector('.button-down');
+
+function moving(){
+	eat.style.top = getRandomIntInclusive(0, 14) * 40 + "px";
+	eat.style.left = getRandomIntInclusive(0, 24) * 40 + "px";
+};
+
+
+ function startLeft () {
+ 	console.log("startLeft");
+ 	document.querySelector('.button-left').outerHTML = `<button class="button-left">Лево</button>`;
+ 	document.querySelector('.button-right').outerHTML = `<button class="button-right">Право</button>`;
+ 	document.querySelector('.button-up').outerHTML = `<button class="button-up">Вверх</button>`;
+ 	document.querySelector('.button-down').outerHTML = `<button class="button-down">Вниз</button>`;
+ 	var z = clearInterval(timer);
+    timer = setInterval(moveLeft, 500);
+ };
+
+function startUp () {
+	document.querySelector('.button-up').outerHTML = `<button class="button-up">Вверх</button>`;
+	document.querySelector('.button-down').outerHTML = `<button class="button-down">Вниз</button>`
+	document.querySelector('.button-left').outerHTML = `<button class="button-left">Лево</button>`;
+	document.querySelector('.button-right').outerHTML = `<button class="button-right" ">Право</button>`;
+ 	console.log("startUp");
+ 	var z = clearInterval(timer);
+    timer = setInterval(moveUp, 500);
+ };
+
+function startRight () {
+	document.querySelector('.button-left').outerHTML = `<button class="button-left">Лево</button>`;
+	document.querySelector('.button-right').outerHTML = `<button class="button-right">Право</button>`;
+	document.querySelector('.button-up').outerHTML = `<button class="button-up">Вверх</button>`;
+ 	document.querySelector('.button-down').outerHTML = `<button class="button-down">Вниз</button>`;
+ 	console.log("startRight");
+ 	var z = clearInterval(timer);
+    timer = setInterval(moveRight, 500);
+ };
+
+function startDown () {
+	document.querySelector('.button-up').outerHTML = `<button class="button-up">Вверх</button>`;
+	document.querySelector('.button-down').outerHTML = `<button class="button-down">Вниз</button>`
+	document.querySelector('.button-left').outerHTML = `<button class="button-left">Лево</button>`;
+	document.querySelector('.button-right').outerHTML = `<button class="button-right">Право</button>`;
+ 	console.log("startDown");
+ 	var z = clearInterval(timer);
+    timer = setInterval(moveDown, 500);
+ };
+
+
+function moveLeft () {
+	x -= 40;
+    elem.style.left = x + "px"
+    console.log("left");
+    document.querySelector('.button-up').outerHTML = `<button class="button-up" onclick="startUp()">Вверх</button>`;
+ 	document.querySelector('.button-down').outerHTML = `<button class="button-down" onclick="startDown()">Вниз</button>`;
+ 	if (elem.style.left == eat.style.left && elem.style.top == eat.style.top) {
+ 		console.log("Eat");
+ 		counter++;
+ 		counterMeter.innerHTML = `${counter}`;
+ 		moving();
+ 	};
+ 	if((y > 560) || (y < 0) || (x > 960) || (x < 0)){
+		console.log("условие работает");
+		clearTime()
+ 	};
+};
+
+function moveRight() {
+	x += 40;
+	elem.style.left = x + "px"
+	console.log("right");
+	document.querySelector('.button-up').outerHTML = `<button class="button-up" onclick="startUp()">Вверх</button>`;
+ 	document.querySelector('.button-down').outerHTML = `<button class="button-down" onclick="startDown()">Вниз</button>`;
+ 	if (elem.style.left == eat.style.left && elem.style.top == eat.style.top) {
+ 		console.log("Eat");
+ 		counter++;
+ 		counterMeter.innerHTML = `${counter}`;
+ 		moving();
+ 	};
+ 	if((y > 560) || (y < 0) || (x > 960) || (x < 0)){
+		console.log("условие работает");
+		clearTime()
+ 	};
+};
+
+function moveUp() {
+	y -= 40;
+	elem.style.top = y + "px"
+	console.log("up");
+	document.querySelector('.button-left').outerHTML = `<button class="button-left" onclick="startLeft()">Лево</button>`;
+	document.querySelector('.button-right').outerHTML = `<button class="button-right" onclick="startRight()">Право</button>`;
+	if (elem.style.left == eat.style.left && elem.style.top == eat.style.top) {
+ 		console.log("Eat");
+ 		counter++;
+ 		counterMeter.innerHTML = `${counter}`;
+ 		moving();
+ 	};
+ 	if((y > 560) || (y < 0) || (x > 960) || (x < 0)){
+		console.log("условие работает");
+		clearTime()
+ 	};
+};
+
+function moveDown() {
+	y += 40;
+	elem.style.top = y + "px"
+	console.log("down");
+	document.querySelector('.button-left').outerHTML = `<button class="button-left" onclick="startLeft()">Лево</button>`;
+	document.querySelector('.button-right').outerHTML = `<button class="button-right" onclick="startRight()">Право</button>`;
+	if (elem.style.left == eat.style.left && elem.style.top == eat.style.top) {
+ 		console.log("Eat");
+ 		counter++;
+ 		counterMeter.innerHTML = `${counter}`;
+ 		moving();
+ 	};
+ 	if((y > 560) || (y < 0) || (x > 960) || (x < 0)){
+		console.log("условие работает");
+		clearTime()
+ 	};
+};
+
+
+function clearTime() {
+	console.log("stop");
+    var z = clearInterval(timer);
+};
+
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+
+moving();
+
+</script>
+</body>
