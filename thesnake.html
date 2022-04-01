@@ -11,6 +11,8 @@
 <div class="window">
 	<div class="allSnake">
 		<div class="snakeHade"></div>
+		<div class="snakeBody"></div>
+		<div class="snakeTail"></div>
 	</div>
 	<div class="eat"></div>
 	<div class="counter">"0"</div>
@@ -18,12 +20,12 @@
 
 <button class="button-clear" onclick="clearTime()">Стоп</button>
 
-<button class="button" onclick="startUp()">Старт</button>
+<button class="button" onclick="startGame()">Старт</button>
 
-<button class="button-up" onclick="startUp()">Вверх</button>
-<button class="button-left" onclick="startLeft()">Лево</button>
-<button class="button-right" onclick="startRight()">Право</button>
-<button class="button-down" onclick="startDown()">Вниз</button>
+<button class="button-up" onclick="changeDirectionUp()">Вверх</button>
+<button class="button-left" onclick="changeDirectionLeft()">Лево</button>
+<button class="button-right" onclick="changeDirectionRight()">Право</button>
+<button class="button-down" onclick="changeDirectionDown()">Вниз</button>
 
 
 
@@ -49,6 +51,24 @@
 	height: 40px;
 	width: 40px;
 	background-color: red;
+}
+
+.snakeBody {
+	position: absolute;
+	height: 40px;
+	width: 40px;
+	top: 360px;
+	left: 480px;
+	background-color: yellow;
+}
+
+.snakeTail {
+	position: absolute;
+	height: 40px;
+	width: 40px;
+	top: 400px;
+	left: 480px;
+	background-color: orange;
 }
 
 .button {
@@ -106,145 +126,92 @@
 
 var eat = document.querySelector('.eat');
 var elem = document.querySelector('.snakeHade');
-var positions = elem.getBoundingClientRect();
-var x = 480;
-var y = 320;
-var timer;
-var lenghtSnake = 1;
+var elemTail = document.querySelector('.snakeTail');
+var elemBody = document.querySelector('.snakeBody');
 
 var counter = 0;
 var counterMeter = document.querySelector('.counter');
 counterMeter.innerHTML = `${counter}`;
 
-var buttonUp = document.querySelector('.button-up');
-var buttonLeft = document.querySelector('.button-left');
-var buttonRight = document.querySelector('.button-right');
-var buttonDown = document.querySelector('.button-down');
+var timer;
 
-function moving(){
-	eat.style.top = getRandomIntInclusive(0, 14) * 40 + "px";
-	eat.style.left = getRandomIntInclusive(0, 24) * 40 + "px";
+var state = {
+	snakeDirection: "x",
+	x: 480,
+	y: 320,
+	speedSnakeGame: 500,
+	snakeSpeed: -40,
+	allSnakeMovies: ["up", "up"],
+	snakeDirectionMove: "up",
+	r: 1,
+	snakeTailX: 480,
+	snakeTailY: 400,
+	snakeBodyX: 480,
+	snakeBodyY: 360,
+}
+
+function startGame() {
+	console.log("Start!");
+	timer = setInterval(moveSnake, state.speedSnakeGame);
 };
 
-
- function startLeft () {
- 	console.log("startLeft");
- 	document.querySelector('.button-left').outerHTML = `<button class="button-left">Лево</button>`;
- 	document.querySelector('.button-right').outerHTML = `<button class="button-right">Право</button>`;
- 	document.querySelector('.button-up').outerHTML = `<button class="button-up">Вверх</button>`;
- 	document.querySelector('.button-down').outerHTML = `<button class="button-down">Вниз</button>`;
- 	var z = clearInterval(timer);
-    timer = setInterval(moveLeft, 500);
- };
-
-function startUp () {
-	document.querySelector('.button-up').outerHTML = `<button class="button-up">Вверх</button>`;
-	document.querySelector('.button-down').outerHTML = `<button class="button-down">Вниз</button>`
-	document.querySelector('.button-left').outerHTML = `<button class="button-left">Лево</button>`;
-	document.querySelector('.button-right').outerHTML = `<button class="button-right" ">Право</button>`;
- 	console.log("startUp");
- 	var z = clearInterval(timer);
-    timer = setInterval(moveUp, 500);
- };
-
-function startRight () {
-	document.querySelector('.button-left').outerHTML = `<button class="button-left">Лево</button>`;
-	document.querySelector('.button-right').outerHTML = `<button class="button-right">Право</button>`;
-	document.querySelector('.button-up').outerHTML = `<button class="button-up">Вверх</button>`;
- 	document.querySelector('.button-down').outerHTML = `<button class="button-down">Вниз</button>`;
- 	console.log("startRight");
- 	var z = clearInterval(timer);
-    timer = setInterval(moveRight, 500);
- };
-
-function startDown () {
-	document.querySelector('.button-up').outerHTML = `<button class="button-up">Вверх</button>`;
-	document.querySelector('.button-down').outerHTML = `<button class="button-down">Вниз</button>`
-	document.querySelector('.button-left').outerHTML = `<button class="button-left">Лево</button>`;
-	document.querySelector('.button-right').outerHTML = `<button class="button-right">Право</button>`;
- 	console.log("startDown");
- 	var z = clearInterval(timer);
-    timer = setInterval(moveDown, 500);
- };
-
-
-function moveLeft () {
-	x -= 40;
-    elem.style.left = x + "px"
-    console.log("left");
-    document.querySelector('.button-up').outerHTML = `<button class="button-up" onclick="startUp()">Вверх</button>`;
- 	document.querySelector('.button-down').outerHTML = `<button class="button-down" onclick="startDown()">Вниз</button>`;
- 	if (elem.style.left == eat.style.left && elem.style.top == eat.style.top) {
- 		console.log("Eat");
+function moveSnake() {
+	state.allSnakeMovies.push(state.snakeDirectionMove);
+	switch(state.snakeDirection) {
+        case "x":
+            state.y += state.snakeSpeed;
+            if((state.y > 560) || (state.y < 0) || (state.x > 960) || (state.x < 0)){
+ 				console.log("условие работает");
+ 				clearTime()
+ 				break;
+  			};
+            elem.style.top = state.y + "px";
+            moveBodySnake();
+            break;
+        case "y":
+            state.x += state.snakeSpeed;
+            if((state.y > 560) || (state.y < 0) || (state.x > 960) || (state.x < 0)){
+ 				console.log("условие работает");
+ 				clearTime()
+ 				break;
+  			};
+            elem.style.left = state.x + "px";
+            moveBodySnake();
+            break;
+        default: 
+			break;
+    };
+    if (elem.style.left == eat.style.left && elem.style.top == eat.style.top) {
  		counter++;
- 		counterMeter.innerHTML = `${counter}`;
- 		moving();
- 	};
- 	if((y > 560) || (y < 0) || (x > 960) || (x < 0)){
-		console.log("условие работает");
-		clearTime()
- 	};
+  		counterMeter.innerHTML = `${counter}`;
+  		eat.style.top = getRandomIntInclusive(0, 14) * 40 + "px";
+		eat.style.left = getRandomIntInclusive(0, 24) * 40 + "px";
+		state.speedSnakeGame = state.speedSnakeGame * 0.97;
+		state.allSnakeMovies.splice(state.r, 0, "increase");
+	};
 };
 
-function moveRight() {
-	x += 40;
-	elem.style.left = x + "px"
-	console.log("right");
-	document.querySelector('.button-up').outerHTML = `<button class="button-up" onclick="startUp()">Вверх</button>`;
- 	document.querySelector('.button-down').outerHTML = `<button class="button-down" onclick="startDown()">Вниз</button>`;
- 	if (elem.style.left == eat.style.left && elem.style.top == eat.style.top) {
- 		console.log("Eat");
- 		counter++;
- 		counterMeter.innerHTML = `${counter}`;
- 		moving();
- 	};
- 	if((y > 560) || (y < 0) || (x > 960) || (x < 0)){
-		console.log("условие работает");
-		clearTime()
- 	};
+function changeDirectionUp() {
+	state.snakeDirection = "x";
+	state.snakeSpeed = -40;
+	state.snakeDirectionMove = "up";
+};
+function changeDirectionLeft() {
+	state.snakeDirection = "y";
+	state.snakeSpeed = -40;
+	state.snakeDirectionMove = "left";
+};
+function changeDirectionRight() {
+	state.snakeDirection = "y";
+	state.snakeSpeed = 40;
+	state.snakeDirectionMove = "right";
+};
+function changeDirectionDown() {
+	state.snakeDirection = "x";
+	state.snakeSpeed = 40;
+	state.snakeDirectionMove = "down";
 };
 
-function moveUp() {
-	y -= 40;
-	elem.style.top = y + "px"
-	console.log("up");
-	document.querySelector('.button-left').outerHTML = `<button class="button-left" onclick="startLeft()">Лево</button>`;
-	document.querySelector('.button-right').outerHTML = `<button class="button-right" onclick="startRight()">Право</button>`;
-	if (elem.style.left == eat.style.left && elem.style.top == eat.style.top) {
- 		console.log("Eat");
- 		counter++;
- 		counterMeter.innerHTML = `${counter}`;
- 		moving();
- 	};
- 	if((y > 560) || (y < 0) || (x > 960) || (x < 0)){
-		console.log("условие работает");
-		clearTime()
- 	};
-};
-
-function moveDown() {
-	y += 40;
-	elem.style.top = y + "px"
-	console.log("down");
-	document.querySelector('.button-left').outerHTML = `<button class="button-left" onclick="startLeft()">Лево</button>`;
-	document.querySelector('.button-right').outerHTML = `<button class="button-right" onclick="startRight()">Право</button>`;
-	if (elem.style.left == eat.style.left && elem.style.top == eat.style.top) {
- 		console.log("Eat");
- 		counter++;
- 		counterMeter.innerHTML = `${counter}`;
- 		moving();
- 	};
- 	if((y > 560) || (y < 0) || (x > 960) || (x < 0)){
-		console.log("условие работает");
-		clearTime()
- 	};
-};
-
-
-function clearTime() {
-	console.log("stop");
-    var z = clearInterval(timer);
-};
 
 function getRandomIntInclusive(min, max) {
   min = Math.ceil(min);
@@ -253,7 +220,268 @@ function getRandomIntInclusive(min, max) {
 }
 
 
+function moving(){
+	eat.style.top = getRandomIntInclusive(0, 14) * 40 + "px";
+	eat.style.left = getRandomIntInclusive(0, 24) * 40 + "px";
+	state.speedSnakeGame = state.speedSnakeGame * 0.97;
+};
+
+
+function clearTime() {
+    var z = clearInterval(timer);
+};
+
+
 moving();
+
+function moveBodySnake() {
+	switch(state.allSnakeMovies[state.r - 1]) {
+        case 'up':
+        	state.snakeTailY -= 40;
+        	elemTail.style.top = state.snakeTailY + "px";
+            break;
+        case 'left':
+        	state.snakeTailX -= 40;
+        	elemTail.style.left = state.snakeTailX + "px";
+            break;
+        case 'right':
+        	state.snakeTailX += 40;
+        	elemTail.style.left = state.snakeTailX + "px";
+            break;
+        case 'down':
+        	state.snakeTailY += 40;
+        	elemTail.style.top = state.snakeTailY + "px";
+            break;
+        default: 
+			break;
+    };
+    switch(state.allSnakeMovies[state.r]) {
+        case 'up':
+        	state.snakeBodyY -= 40;
+        	elemBody.style.top = state.snakeBodyY + "px";
+            break;
+        case 'left':
+        	state.snakeBodyX -= 40;
+        	elemBody.style.left = state.snakeBodyX + "px";
+            break;
+        case 'right':
+        	state.snakeBodyX += 40;
+        	elemBody.style.left = state.snakeBodyX + "px";
+            break;
+        case 'down':
+        	state.snakeBodyY += 40;
+        	elemBody.style.top = state.snakeBodyY + "px";
+            break;
+        default: 
+			break;
+    };
+    console.log(state.allSnakeMovies[state.r]);
+    state.r++;
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// function moveSnake() {
+// 	switch(state.snakeDirection) {
+//         case "x":
+//             state.y += state.snakeSpeed;
+//             elem.style.top = state.y + "px"
+//             break;
+//         case "y":
+//             state.x += state.snakeSpeed;
+//             elem.style.left = state.x + "px"
+//             break;
+//         default: 
+// 			break;
+//     };
+// };
+
+
+
+// function moveSnake() {
+// 	switch(state.snakeDirection) {
+//         case "up":
+//             console.log("up");
+//             state.y -= 40;
+//             if((state.y > 560) || (state.y < 0) || (state.x > 960) || (state.x < 0)){
+//  				console.log("условие работает");
+//  				clearTime()
+//  				break;
+//   			};
+//             elem.style.top = state.y + "px"
+//             break;
+//         case "left":
+//             console.log("left");
+//             state.x -= 40;
+//             if((state.y > 560) || (state.y < 0) || (state.x > 960) || (state.x < 0)){
+//  				console.log("условие работает");
+//  				clearTime()
+//  				break;
+//   			};
+//             elem.style.left = state.x + "px"
+//             break;
+//         case "right":
+//             console.log("right");
+//             state.x += 40;
+//             if((state.y > 560) || (state.y < 0) || (state.x > 960) || (state.x < 0)){
+//  				console.log("условие работает");
+//  				clearTime()
+//  				break;
+//   			};
+//             elem.style.left = state.x + "px"
+//             break;
+//         case "down":
+//             console.log("down");
+//             state.y += 40;
+//             if((state.y > 560) || (state.y < 0) || (state.x > 960) || (state.x < 0)){
+//  				console.log("условие работает");
+//  				clearTime()
+//  				break;
+//   			};
+//             elem.style.top = state.y + "px"
+//             break;
+//         default: 
+// 			console.log("ничего не совпало");
+// 			break;
+//     };
+// }
+
+
+
+
+
+
+
+
+//  function startLeft () {
+//  	console.log("startLeft");
+//  	document.querySelector('.button-left').outerHTML = `<button class="button-left">Лево</button>`;
+//  	document.querySelector('.button-right').outerHTML = `<button class="button-right">Право</button>`;
+//  	document.querySelector('.button-up').outerHTML = `<button class="button-up">Вверх</button>`;
+//  	document.querySelector('.button-down').outerHTML = `<button class="button-down">Вниз</button>`;
+//  	var z = clearInterval(timer);
+//     timer = setInterval(moveLeft, 100);
+//  };
+
+// function startUp () {
+// 	document.querySelector('.button-up').outerHTML = `<button class="button-up">Вверх</button>`;
+// 	document.querySelector('.button-down').outerHTML = `<button class="button-down">Вниз</button>`
+// 	document.querySelector('.button-left').outerHTML = `<button class="button-left">Лево</button>`;
+// 	document.querySelector('.button-right').outerHTML = `<button class="button-right" ">Право</button>`;
+//  	console.log("startUp");
+//  	var z = clearInterval(timer);
+//     timer = setInterval(moveUp, 100);
+//  };
+
+// function startRight () {
+// 	document.querySelector('.button-left').outerHTML = `<button class="button-left">Лево</button>`;
+// 	document.querySelector('.button-right').outerHTML = `<button class="button-right">Право</button>`;
+// 	document.querySelector('.button-up').outerHTML = `<button class="button-up">Вверх</button>`;
+//  	document.querySelector('.button-down').outerHTML = `<button class="button-down">Вниз</button>`;
+//  	console.log("startRight");
+//  	var z = clearInterval(timer);
+//     timer = setInterval(moveRight, 100);
+//  };
+
+// function startDown () {
+// 	document.querySelector('.button-up').outerHTML = `<button class="button-up">Вверх</button>`;
+// 	document.querySelector('.button-down').outerHTML = `<button class="button-down">Вниз</button>`
+// 	document.querySelector('.button-left').outerHTML = `<button class="button-left">Лево</button>`;
+// 	document.querySelector('.button-right').outerHTML = `<button class="button-right">Право</button>`;
+//  	console.log("startDown");
+//  	var z = clearInterval(timer);
+//     timer = setInterval(moveDown, 100);
+//  };
+
+
+// function moveLeft () {
+// 	x -= 40;
+//     elem.style.left = x + "px"
+//     console.log("left");
+//     document.querySelector('.button-up').outerHTML = `<button class="button-up" onclick="startUp()">Вверх</button>`;
+//  	document.querySelector('.button-down').outerHTML = `<button class="button-down" onclick="startDown()">Вниз</button>`;
+//  	if (elem.style.left == eat.style.left && elem.style.top == eat.style.top) {
+//  		console.log("Eat");
+//  		counter++;
+//  		counterMeter.innerHTML = `${counter}`;
+//  		moving();
+//  	};
+//  	if((y > 560) || (y < 0) || (x > 960) || (x < 0)){
+// 		console.log("условие работает");
+// 		clearTime()
+//  	};
+// };
+
+// function moveRight() {
+// 	x += 40;
+// 	elem.style.left = x + "px"
+// 	console.log("right");
+// 	document.querySelector('.button-up').outerHTML = `<button class="button-up" onclick="startUp()">Вверх</button>`;
+//  	document.querySelector('.button-down').outerHTML = `<button class="button-down" onclick="startDown()">Вниз</button>`;
+//  	if (elem.style.left == eat.style.left && elem.style.top == eat.style.top) {
+//  		console.log("Eat");
+//  		counter++;
+//  		counterMeter.innerHTML = `${counter}`;
+//  		moving();
+//  	};
+//  	if((y > 560) || (y < 0) || (x > 960) || (x < 0)){
+// 		console.log("условие работает");
+// 		clearTime()
+//  	};
+// };
+
+// function moveUp() {
+// 	y -= 40;
+// 	elem.style.top = y + "px"
+// 	console.log("up");
+// 	document.querySelector('.button-left').outerHTML = `<button class="button-left" onclick="startLeft()">Лево</button>`;
+// 	document.querySelector('.button-right').outerHTML = `<button class="button-right" onclick="startRight()">Право</button>`;
+// 	if (elem.style.left == eat.style.left && elem.style.top == eat.style.top) {
+//  		console.log("Eat");
+//  		counter++;
+//  		counterMeter.innerHTML = `${counter}`;
+//  		moving();
+//  	};
+//  	if((y > 560) || (y < 0) || (x > 960) || (x < 0)){
+// 		console.log("условие работает");
+// 		clearTime()
+//  	};
+// };
+
+// function moveDown() {
+// 	y += 40;
+// 	elem.style.top = y + "px"
+// 	console.log("down");
+// 	document.querySelector('.button-left').outerHTML = `<button class="button-left" onclick="startLeft()">Лево</button>`;
+// 	document.querySelector('.button-right').outerHTML = `<button class="button-right" onclick="startRight()">Право</button>`;
+// 	if (elem.style.left == eat.style.left && elem.style.top == eat.style.top) {
+//  		console.log("Eat");
+//  		counter++;
+//  		counterMeter.innerHTML = `${counter}`;
+//  		moving();
+//  	};
+//  	if((y > 560) || (y < 0) || (x > 960) || (x < 0)){
+// 		console.log("условие работает");
+// 		clearTime()
+//  	};
+// };
+
 
 </script>
 </body>
