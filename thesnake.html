@@ -460,6 +460,11 @@
 	width: 40px;
 }
 
+.itemActive {
+	background-color: red; 
+	height: 40px; 
+	width: 40px;
+}
 
 
 .window {
@@ -583,6 +588,7 @@ var state = {
 	r: 1,
 	snakeTailX: 480,
 	snakeTailY: 360,
+	directionSnakeBody: ["", ""],
 }
 
 function startGame() {
@@ -591,6 +597,16 @@ function startGame() {
 };
 
 function moveSnake() {
+	var t = 0;
+	var dSB;
+	while(t < 375){
+		if(state.x == item[t].getBoundingClientRect().x && state.y == item[t].getBoundingClientRect().y) {
+			item[t].classList = "itemActive";			
+			state.directionSnakeBody.push(item[t].getBoundingClientRect().x);
+			state.directionSnakeBody.push(item[t].getBoundingClientRect().y);
+		};
+		t++;
+	};
 	state.allSnakeMovies.push(state.snakeDirectionMove);
 	switch(state.snakeDirection) {
         case "x":
@@ -599,6 +615,14 @@ function moveSnake() {
  				console.log("условие работает");
  				clearTime()
  				break;
+  			};
+  			var peremX = 0;
+  			while(peremX <= state.directionSnakeBody.length) {
+  				if(state.x == state.directionSnakeBody[peremX] && state.y == state.directionSnakeBody[peremX + 1]){
+  					clearTime()
+  					console.log("Игра окончена");
+  				};
+  			peremX += 2;
   			};
             elem.style.top = state.y + "px";
             moveBodySnake();
@@ -609,6 +633,14 @@ function moveSnake() {
  				console.log("условие работает");
  				clearTime()
  				break;
+  			};
+  			var peremX = 0;
+  			while(peremX <= state.directionSnakeBody.length) {
+  				if(state.x == state.directionSnakeBody[peremX] && state.y == state.directionSnakeBody[peremX + 1]){
+  					clearTime()
+  					console.log("Игра окончена");
+  				};
+  			peremX += 2;
   			};
             elem.style.left = state.x + "px";
             moveBodySnake();
@@ -624,13 +656,6 @@ function moveSnake() {
 		state.speedSnakeGame = state.speedSnakeGame * 0.97;
 		state.allSnakeMovies.splice(state.r - 1, 0, "increase");
 	};	
-	var t = 0;
-	while(t < 375){
-		if(state.x == item[t].getBoundingClientRect().x && state.y == item[t].getBoundingClientRect().y) {
-			item[t].style.cssText = "background-color: red; height: 40px; width: 40px; outline: 1px solid gray;";
-		};
-		t++;
-	};
 };
 
 function changeDirectionUp() {
@@ -675,29 +700,54 @@ function moveBodySnake() {
         case 'up':
         	state.snakeTailY -= 40;
         	elemTail.style.top = state.snakeTailY + "px";
+        	var i = 0;
+    		while(i < 375){
+				if(state.snakeTailX == item[i].getBoundingClientRect().x && state.snakeTailY == item[i].getBoundingClientRect().y) {
+					item[i].classList = "item";
+					state.directionSnakeBody.splice(0, 2);
+				};
+				i++;
+			};
             break;
         case 'left':
         	state.snakeTailX -= 40;
         	elemTail.style.left = state.snakeTailX + "px";
+        	var i = 0;
+    		while(i < 375){
+				if(state.snakeTailX == item[i].getBoundingClientRect().x && state.snakeTailY == item[i].getBoundingClientRect().y) {
+					item[i].classList = "item";
+					state.directionSnakeBody.splice(0, 2);
+				};
+				i++;
+			};
             break;
         case 'right':
         	state.snakeTailX += 40;
         	elemTail.style.left = state.snakeTailX + "px";
+        	var i = 0;
+    		while(i < 375){
+				if(state.snakeTailX == item[i].getBoundingClientRect().x && state.snakeTailY == item[i].getBoundingClientRect().y) {
+					item[i].classList = "item";
+					state.directionSnakeBody.splice(0, 2);
+				};
+				i++;
+			};
             break;
         case 'down':
         	state.snakeTailY += 40;
         	elemTail.style.top = state.snakeTailY + "px";
+        	var i = 0;
+    		while(i < 375){
+				if(state.snakeTailX == item[i].getBoundingClientRect().x && state.snakeTailY == item[i].getBoundingClientRect().y) {
+					item[i].classList = "item";
+					state.directionSnakeBody.splice(0, 2);
+				};
+				i++;
+			};
             break;
-        default: 
+        default: 	
 			break;
     };
-    var i = 0;
-    while(i < 375){
-		if(state.snakeTailX == item[i].getBoundingClientRect().x && state.snakeTailY == item[i].getBoundingClientRect().y) {
-			item[i].style.cssText = "background-color: white;";
-		};
-		i++;
-	};
     state.r++;
 };
 
