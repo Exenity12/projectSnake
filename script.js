@@ -1,5 +1,3 @@
-
-
 var tableElem = document.querySelector('.table');
 var tablePeremOne = 0;
 var tablePeremTwo = 0;
@@ -62,6 +60,11 @@ var buttonLeft = document.querySelector('.button-left');
 var buttonRight = document.querySelector('.button-right');
 var buttonDown = document.querySelector('.button-down');
 
+var widthWindows = windows.getBoundingClientRect().width;
+var hightWindows = windows.getBoundingClientRect().height;
+
+
+
 
 
 function startGame() {
@@ -69,7 +72,30 @@ function startGame() {
     timer = setInterval(moveSnake, state.speedSnakeGame);
 };
 
+
+
+
+
 function moveSnake() {
+    createItemActive()
+    state.allSnakeMovies.push(state.snakeDirectionMove); 
+    if(state.snakeDirection == "y" && isPlaceForEat){
+        state.y += state.snakeSpeed;
+        gameOver();
+        helper();
+        elem.style.top = state.y + "px";
+        moveBodySnake();
+    } else if (state.snakeDirection == "x" && isPlaceForEat){
+        state.x += state.snakeSpeed;
+        gameOver();
+        helper();
+        elem.style.left = state.x + "px";
+        moveBodySnake();
+    };
+    eating(); 
+};
+
+function createItemActive(){
     var t = 0;
     while(t < 375){
         if(state.x == state.item[t].getBoundingClientRect().x && state.y == state.item[t].getBoundingClientRect().y) {
@@ -79,34 +105,14 @@ function moveSnake() {
         };
         t++;
     };
-    state.allSnakeMovies.push(state.snakeDirectionMove);
-    switch(state.snakeDirection) {
-        case "y":
-            state.y += state.snakeSpeed;
-            if((state.y > windows.getBoundingClientRect().height - 42) || (state.y < 0) || (state.x > windows.getBoundingClientRect().width - 42) || (state.x < 0)){
-                console.log("условие работает");
-                clearTime();
-                break;
-            };
-            helper()
-            elem.style.top = state.y + "px";
-            moveBodySnake();
-            break;
-        case "x":
-            state.x += state.snakeSpeed;
-            if((state.y > windows.getBoundingClientRect().height - 42) || (state.y < 0) || (state.x > windows.getBoundingClientRect().width - 42) || (state.x < 0)){
-                console.log("условие работает");
-                clearTime()
-                break;
-            };
-            helper();
-            elem.style.left = state.x + "px";
-            moveBodySnake();
-            break;
-        default: 
-            break;
+};
+
+function gameOver(){
+    if((state.y >= hightWindows) || (state.y < 0) || (state.x >= widthWindows) || (state.x < 0)){
+        console.log("условие работает");
+        clearTime()
+        isPlaceForEat = false;
     };
-    eating(); 
 };
 
 function helper() {
@@ -234,6 +240,9 @@ document.addEventListener('keydown', function(event){
         changeDirection('y', sizeSquare, 'down');
     }
 });
+
+
+
 
 function moving(){
     eat.style.top = getRandomIntInclusive(0, 14) * sizeSquare + "px";

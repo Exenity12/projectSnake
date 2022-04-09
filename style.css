@@ -25,11 +25,11 @@
 
 .window {
     position: absolute;
-    top: -1px;
-    left:-1px;
+    top: 0px;
+    left:0px;
     height: 600px;
     width: 1000px;
-    border: 1px solid gray;
+    background-color: white;
 }
 
 .counter {
@@ -112,3 +112,11 @@
     background-color: green;
 }
 
+.okno {
+    position: absolute;
+    height: 602px;
+    width: 1002px;
+    background-color: grey;
+    top: -1px;
+    left: -1px;
+}
