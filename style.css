@@ -1,4 +1,3 @@
-
 .table {
     position: absolute;
     top: 0px;
@@ -19,6 +18,12 @@
 
 .itemActive {
     background-color: red; 
+    height: 40px; 
+    width: 40px;
+}
+
+.itemEat {
+    background-color: green; 
     height: 40px; 
     width: 40px;
 }
@@ -45,6 +50,7 @@
     height: 40px;
     width: 40px;
     background-color: red;
+    z-index: 30;
 }
 
 .snakeBody {
@@ -100,16 +106,6 @@
     position: absolute;
     top: 770px;
     left: 500px;
-}
-
-.eat {
-    position: absolute;
-    z-index: 30;
-    top: 0px;
-    left: 0px;
-    height: 40px;
-    width: 40px;
-    background-color: green;
 }
 
 .okno {
