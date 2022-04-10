@@ -13,53 +13,51 @@ var tableSquareVertSize = 15;
 var tableSquareHorizonSize = 25;
 var counter = 0;
 var sizeSquare = 40;
-var allSqyare = 375;
 
-var tableElem = document.querySelector('.table');
-var windows = document.querySelector('.window');
-var elem = document.querySelector('.snakeHade');
-var elemTail = document.querySelector('.snakeTail');
-var counterMeter = document.querySelector('.counter');
-var buttonUp = document.querySelector('.button-up');
-var buttonLeft = document.querySelector('.button-left');
-var buttonRight = document.querySelector('.button-right');
-var buttonDown = document.querySelector('.button-down');
+const tableElem = document.querySelector('.table');
+const windows = document.querySelector('.window');
+const elem = document.querySelector('.snakeHade');
+const elemTail = document.querySelector('.snakeTail');
+const counterMeter = document.querySelector('.counter');
+const buttonUp = document.querySelector('.button-up');
+const buttonLeft = document.querySelector('.button-left');
+const buttonRight = document.querySelector('.button-right');
+const buttonDown = document.querySelector('.button-down');
 
-var widthWindows = windows.getBoundingClientRect().width;
-var hightWindows = windows.getBoundingClientRect().height;
+const widthWindows = windows.getBoundingClientRect().width;
+const hightWindows = windows.getBoundingClientRect().height;
 
 
 while(tablePeremOne < tableSquareVertSize){
     tableElem.innerHTML += `<div class="string"></div>`;
     tablePeremOne++;
 };
-var tableString = document.querySelectorAll('.string');
+const tableString = document.querySelectorAll('.string');
 
 while(tablePeremThree < tableSquareVertSize) {
     tablePeremTwo = 0;
     while(tablePeremTwo < tableSquareHorizonSize){
-        tableString[tablePeremThree].innerHTML += `<div class="item" id="id_${tablePeremTwo * sizeSquare}_${tablePeremThree * sizeSquare}"></div>`
+        tableString[tablePeremThree].innerHTML += `<div class="item" id="id_${tablePeremTwo}_${tablePeremThree}"></div>`
         tablePeremTwo++;
     };
     tablePeremThree++;
 };
-var item = document.querySelectorAll('.item');
+const item = document.querySelectorAll('.item');
 
 var state = {
+    tail: {top: 9, left: 12},
+    head: {top: 8, left: 12},
     snakeDirection: "top",
-    left: elem.getBoundingClientRect().x,
-    top: elem.getBoundingClientRect().y,
     speedSnakeGame: 200,
     snakeSpeed: -1,
     allSnakeMovies: ["up"],
     snakeDirectionMove: "up",
     r: 1,
-    snakeTailX: elemTail.getBoundingClientRect().x,
-    snakeTailY: elemTail.getBoundingClientRect().y,
     directionSnakeBody: ["", ""],
+    snakeBodyItems: [],
     item: [],
-    foodDirectionTop: getRandomIntInclusive(0, 24) * sizeSquare,
-    foodDirectionLeft: getRandomIntInclusive(0, 14) * sizeSquare,
+    foodDirectionTop: getRandomIntInclusive(0, 24),
+    foodDirectionLeft: getRandomIntInclusive(0, 14),
 };
 
 state.item = item;

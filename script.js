@@ -6,24 +6,45 @@ function startGame() {
 };
 
 function moveSnake() {
-    checkGameOver();
     createItemActive();
+    memorizeDrection();
     state.allSnakeMovies.push(state.snakeDirectionMove); 
     eatingFood();
-    state[state.snakeDirection] += state.snakeSpeed * sizeSquare;
-    elem.style[state.snakeDirection] = state[state.snakeDirection] + "px";
+    state.head[state.snakeDirection] += state.snakeSpeed;
+    if(isGameOver()){
+        clearTime();
+        return;
+    };
+    accidentCheck();
+    elem.style[state.snakeDirection] = state.head[state.snakeDirection] * sizeSquare + "px";
     moveTailSnake();
 };
 
-function checkGameOver(){
-    if((state.top >= hightWindows) || (state.top < 0) || (state.left >= widthWindows) || (state.left < 0)){
+function isGameOver(){
+    if((state.head.top >= 15) || (state.head.top < 0) || (state.head.left >= 25) || (state.head.left < 0)){
         console.log("условие работает");
-        clearTime();
+        return true;
+    };
+    return false;
+};
+
+function memorizeDrection() {
+    state.snakeBodyItems.push({top: state.head.top, left: state.head.left});
+    if(state.snakeBodyItems[0].top == state.tail.top && state.snakeBodyItems[0].left == state.tail.left){
+        state.snakeBodyItems.splice(0, 1);
     };
 };
 
+function accidentCheck(){
+    state.snakeBodyItems.forEach((item) => {
+        if(item.top == state.head.top && item.left == state.head.left){
+            clearTime();
+        };
+    });
+}
+
 function createItemActive(){
-    let item = document.querySelector(`#id_${state.left}_${state.top}`);
+    let item = document.querySelector(`#id_${state.head.left}_${state.head.top}`);
     if(!item){
         return;
     };
@@ -31,7 +52,7 @@ function createItemActive(){
 };
 
 function eatingFood() {
-    if(`#id_${state.left}_${state.top}` == `#id_${state.foodDirectionTop}_${state.foodDirectionLeft}`){
+    if(`#id_${state.head.left}_${state.head.top}` == `#id_${state.foodDirectionTop}_${state.foodDirectionLeft}`){
     movingFood();
     state.allSnakeMovies.splice(state.r - 1, 0, "increase");
     state.speedSnakeGame = state.speedSnakeGame * 0.97;
@@ -41,10 +62,9 @@ function eatingFood() {
 };
 
 function movingFood() {
-    state.foodDirectionTop = getRandomIntInclusive(0, 24) * sizeSquare;
-    state.foodDirectionLeft = getRandomIntInclusive(0, 14) * sizeSquare;
+    state.foodDirectionTop = getRandomIntInclusive(0, 24);
+    state.foodDirectionLeft = getRandomIntInclusive(0, 14);
     let food = document.querySelector(`#id_${state.foodDirectionTop}_${state.foodDirectionLeft}`);
-    console.log(food);
     food.classList = "itemEat";
 };
 
@@ -52,23 +72,23 @@ function moveTailSnake() {
     switch(state.allSnakeMovies[state.r - 1]) {
         case 'up':
             disableItemActive()
-            state.snakeTailY -= sizeSquare;
-            elemTail.style.top = state.snakeTailY + "px";
+            state.tail.top -= 1;
+            elemTail.style.top = state.tail.top * sizeSquare + "px";
             break;
         case 'left':
             disableItemActive()
-            state.snakeTailX -= sizeSquare;
-            elemTail.style.left = state.snakeTailX + "px";
+            state.tail.left -= 1;
+            elemTail.style.left = state.tail.left * sizeSquare + "px";
             break;
         case 'right':
             disableItemActive()
-            state.snakeTailX += sizeSquare;
-            elemTail.style.left = state.snakeTailX + "px";
+            state.tail.left += 1;
+            elemTail.style.left = state.tail.left * sizeSquare + "px";
             break;
         case 'down':
             disableItemActive()
-            state.snakeTailY += sizeSquare;
-            elemTail.style.top = state.snakeTailY + "px";
+            state.tail.top += 1;
+            elemTail.style.top = state.tail.top * sizeSquare + "px";
             break;
         default:
             break;
@@ -77,7 +97,7 @@ function moveTailSnake() {
 };
 
 function disableItemActive(){
-    let item = document.querySelector(`#id_${state.snakeTailX}_${state.snakeTailY}`);
+    let item = document.querySelector(`#id_${state.tail.left}_${state.tail.top}`);
     if(!item){
         return;
     };
